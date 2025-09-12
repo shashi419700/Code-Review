@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "prismjs/themes/prism-tomorrow.css";
 import Editor from "react-simple-code-editor";
 import prism from "prismjs";
@@ -6,49 +6,36 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
+  // State for the code editor content
   const [code, setCode] = useState(`function sum(a, b) {
   return a + b;
 }`);
+
+  // State to store AI review text
   const [review, setReview] = useState("");
+
+  // Loading indicator for API call
   const [loading, setLoading] = useState(false);
+
+  // Dark/light mode toggle
   const [darkMode, setDarkMode] = useState(true);
 
-  const typingRef = useRef(null);
-  const isTypingRef = useRef(false);
-  const editorRef = useRef(null);
-  const [editorHeight, setEditorHeight] = useState(150); // Mobile-friendly initial height
-
+  // Highlight syntax on initial render
   useEffect(() => {
     prism.highlightAll();
-    document.title = "Shashi Code Reviewer";
-    adjustEditorHeight();
   }, []);
 
-  useEffect(() => {
-    adjustEditorHeight();
-  }, [code]);
-
-  function adjustEditorHeight() {
-    const lines = code.split("\n").length;
-    const newHeight = Math.min(Math.max(150, lines * 24), 350); // 150-350px for mobile
-    setEditorHeight(newHeight);
-  }
-
+  // Function to call backend API and get AI review
   async function reviewCode() {
-    if (!code.trim()) return;
-
     setLoading(true);
-    setReview("");
-    stopTyping();
-
+    setReview(""); // Clear previous review
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/ai/get-review`,
-        { code }
-      );
+      const response = await axios.post("http://localhost:3000/ai/get-review", {
+        code,
+      });
 
       const fullText = response.data;
-      typeWriterEffect(fullText);
+      typeWriterEffect(fullText); // Display review with typewriter effect
     } catch (err) {
       console.log(err);
       setReview("❌ Error while fetching review. Please try again.");
@@ -56,58 +43,30 @@ function App() {
     setLoading(false);
   }
 
+  // Typewriter effect for AI review text
   function typeWriterEffect(text) {
-    stopTyping();
-    isTypingRef.current = true;
     let i = 0;
-    setReview("");
+    setReview(""); // Reset review text
+    const speed = 20; // Typing speed in milliseconds
 
     function typing() {
-      if (!isTypingRef.current || !text) return;
-
       if (i < text.length) {
         setReview((prev) => prev + text.charAt(i));
         i++;
-        typingRef.current = setTimeout(typing, 20);
-      } else {
-        isTypingRef.current = false;
+        setTimeout(typing, speed);
       }
     }
 
     typing();
   }
 
-  function stopTyping() {
-    if (typingRef.current) {
-      clearTimeout(typingRef.current);
-      typingRef.current = null;
-    }
-    isTypingRef.current = false;
-  }
-
-  function clearCode() {
-    setCode("");
-    stopTyping();
-    if (!review) setReview("");
-  }
-
-  function clearReview() {
-    setReview("");
-    stopTyping();
-  }
-
-  // Responsive font size based on window width
-  const editorFontSize = window.innerWidth < 500 ? 14 : 16;
-
   return (
     <div className={darkMode ? "app dark" : "app light"}>
-      <header className="app-header">
-        <div className="logo">
-          <span className="logo-icon">💻</span>
-          <span className="logo-text">Shashi</span>
-        </div>
+      {/* HEADER */}
+      <header>
         <h1>⚡ AI Code Reviewer</h1>
         <div className="actions">
+          {/* Toggle dark/light mode */}
           <button onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
           </button>
@@ -115,18 +74,20 @@ function App() {
       </header>
 
       <main>
+        {/* LEFT PANEL - Code Editor */}
         <div className="left">
+          {/* Toolbar showing code stats and clear button */}
           <div className="toolbar">
             <span>📄 {code.split("\n").length} lines</span>
             <span>✍️ {code.length} chars</span>
-            <button className="clear-btn" onClick={clearCode}>
+            <button className="clear-btn" onClick={() => setCode("")}>
               🗑️ Clear Code
             </button>
           </div>
 
-          <div className="code" style={{ height: editorHeight }}>
+          {/* Code editor component */}
+          <div className="code">
             <Editor
-              ref={editorRef}
               value={code}
               onValueChange={(code) => setCode(code)}
               highlight={(code) =>
@@ -135,33 +96,31 @@ function App() {
               padding={10}
               style={{
                 fontFamily: '"Fira Code", monospace',
-                fontSize: editorFontSize,
+                fontSize: 16,
                 height: "100%",
                 width: "100%",
-                overflow: "auto",
-                transition: "height 0.2s ease",
               }}
             />
           </div>
 
+          {/* Button to trigger AI code review */}
           <div onClick={reviewCode} className="review">
             {loading ? "⏳ Reviewing..." : "🚀 Review Code"}
           </div>
         </div>
 
+        {/* RIGHT PANEL - Review Output */}
         <div className="right">
           <div className="review-header">
             <h2>Review</h2>
-            <button className="clear-btn" onClick={clearReview}>
+            {/* Clear review button */}
+            <button className="clear-btn" onClick={() => setReview("")}>
               🗑️ Clear Review
             </button>
           </div>
           <div className="review-box">
-            {review ? (
-              <pre>{review}</pre>
-            ) : (
-              "⚡ No review yet, try submitting code!"
-            )}
+            {/* Display AI review or placeholder */}
+            {review ? <pre>{review}</pre> : "⚡ No review yet, try submitting code!"}
           </div>
         </div>
       </main>
