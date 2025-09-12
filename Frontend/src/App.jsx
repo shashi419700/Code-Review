@@ -26,7 +26,8 @@ function App() {
   }, []);
 
   // Base API URL from environment variables
-  const API_URL = import.meta.env.VITE_API_URL || "https://code-review-9.onrender.com";
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://code-review-9.onrender.com";
 
   // Function to call backend API and get AI review
   async function reviewCode() {
@@ -67,6 +68,10 @@ function App() {
     <div className={darkMode ? "app dark" : "app light"}>
       {/* HEADER */}
       <header>
+        {/* Logo / Name */}
+        <div className="logo">
+          <span>💻 Shashi</span>
+        </div>
         <h1>⚡ AI Code Reviewer</h1>
         <div className="actions">
           {/* Toggle dark/light mode */}
@@ -123,7 +128,11 @@ function App() {
           </div>
           <div className="review-box">
             {/* Display AI review or placeholder */}
-            {review ? <pre>{review}</pre> : "⚡ No review yet, try submitting code!"}
+            {review ? (
+              <pre>{review}</pre>
+            ) : (
+              "⚡ No review yet, try submitting code!"
+            )}
           </div>
         </div>
       </main>
