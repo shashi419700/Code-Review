@@ -1,12 +1,34 @@
-# React + Vite
+# ⚡ AI Code Reviewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![AI Code Reviewer](./assets/logo.png)  
 
-Currently, two official plugins are available:
+**AI Code Reviewer** is a modern, responsive **React frontend** that lets you write code in multiple languages and get **AI-powered code reviews** instantly. Perfect for developers who want to debug, learn, or improve code efficiently.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Multi-language Support:** JavaScript, TypeScript, Python, C++, C, Java, C#, Go, Ruby, PHP, Swift, Kotlin, Rust.
+- **AI-Powered Review:** Submit code and get intelligent suggestions.
+- **Dark/Light Mode:** Toggle between themes for comfort and readability.
+- **Syntax Highlighting:** Powered by PrismJS.
+- **Copy & Download Reviews:** Save AI feedback easily.
+- **Responsive UI:** Works on desktop and mobile with smooth animations.
+
+---
+
+## 🖥️ Preview
+
+![Dark Mode](./assets/screenshot-dark.png)  
+![Light Mode](./assets/screenshot-light.png)  
+
+---
+
+## 📦 Installation
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/yourusername/ai-code-reviewer.git
+cd ai-code-reviewer
+

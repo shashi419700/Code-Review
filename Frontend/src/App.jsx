@@ -133,7 +133,10 @@ int main() {
                     : "appearance-none px-4 py-3 rounded-xl bg-white text-black font-semibold border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 hover:border-purple-400 transition-all cursor-pointer"
                 }
               >
-                <option disabled className={darkMode ? "text-gray-400" : "text-gray-400"}>
+                <option
+                  disabled
+                  className={darkMode ? "text-gray-400" : "text-gray-400"}
+                >
                   🔽 Select Language
                 </option>
                 <option value="javascript">🟨 JavaScript</option>
