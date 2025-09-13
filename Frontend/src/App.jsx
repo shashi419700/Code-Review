@@ -1,45 +1,33 @@
 import { useState, useEffect } from "react";
-import "prismjs/themes/prism-tomorrow.css";
 import Editor from "react-simple-code-editor";
 import prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
 import axios from "axios";
-import "./App.css";
+import "./index.css";
 
 function App() {
-  // State for the code editor content
   const [code, setCode] = useState(`function sum(a, b) {
   return a + b;
 }`);
-
-  // State to store AI review text
   const [review, setReview] = useState("");
-
-  // Loading indicator for API call
   const [loading, setLoading] = useState(false);
-
-  // Dark/light mode toggle
   const [darkMode, setDarkMode] = useState(true);
+  const [language, setLanguage] = useState("javascript");
 
-  // Highlight syntax on initial render
   useEffect(() => {
     prism.highlightAll();
   }, []);
 
-  // Base API URL from environment variables
   const API_URL =
     import.meta.env.VITE_API_URL || "https://code-review-9.onrender.com";
 
-  // Function to call backend API and get AI review
   async function reviewCode() {
-    if (!code.trim()) return; // Prevent empty submissions
-
+    if (!code.trim()) return;
     setLoading(true);
-    setReview(""); // Clear previous review
+    setReview("");
     try {
       const response = await axios.post(`${API_URL}/ai/get-review`, { code });
-
-      const fullText = response.data;
-      typeWriterEffect(fullText); // Display review with typewriter effect
+      typeWriterEffect(response.data);
     } catch (err) {
       console.log(err);
       setReview("❌ Error while fetching review. Please try again.");
@@ -47,12 +35,10 @@ function App() {
     setLoading(false);
   }
 
-  // Typewriter effect for AI review text
   function typeWriterEffect(text) {
     let i = 0;
-    setReview(""); // Reset review text
-    const speed = 20; // Typing speed in milliseconds
-
+    setReview("");
+    const speed = 15;
     function typing() {
       if (i < text.length) {
         setReview((prev) => prev + text.charAt(i));
@@ -60,82 +46,152 @@ function App() {
         setTimeout(typing, speed);
       }
     }
-
     typing();
   }
 
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+  }
+
+  function downloadReview() {
+    const blob = new Blob([review], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "code-review.txt";
+    a.click();
+  }
+
   return (
-    <div className={darkMode ? "app dark" : "app light"}>
+    <div
+      className={
+        darkMode
+          ? "dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-gray-100 min-h-screen flex flex-col"
+          : "bg-gradient-to-br from-gray-100 to-white text-gray-900 min-h-screen flex flex-col"
+      }
+    >
       {/* HEADER */}
-      <header>
-        {/* Logo / Name */}
-        <div className="logo">
+      <header className="flex flex-wrap justify-between items-center p-4 md:p-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-2xl backdrop-blur-md z-10">
+        <div className="flex items-center gap-2 font-bold text-2xl md:text-3xl">
           <span>💻 Shashi</span>
         </div>
-        <h1>⚡ AI Code Reviewer</h1>
-        <div className="actions">
-          {/* Toggle dark/light mode */}
-          <button onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
+        <h1 className="text-lg md:text-2xl font-semibold tracking-wide">
+          ⚡ AI Code Reviewer
+        </h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md font-semibold hover:bg-white/40 transition-all shadow-md hover:shadow-xl"
+          >
+            {darkMode ? "🌞 Light" : "🌙 Dark"}
           </button>
         </div>
       </header>
 
-      <main>
-        {/* LEFT PANEL - Code Editor */}
-        <div className="left">
-          {/* Toolbar showing code stats and clear button */}
-          <div className="toolbar">
-            <span>📄 {code.split("\n").length} lines</span>
-            <span>✍️ {code.length} chars</span>
-            <button className="clear-btn" onClick={() => setCode("")}>
-              🗑️ Clear Code
-            </button>
+      <main className="flex flex-col md:flex-row gap-6 p-4 md:p-6 flex-1">
+        {/* LEFT PANEL */}
+        <div className="flex-1 flex flex-col bg-gray-900/70 dark:bg-gray-900/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:scale-[1.01]">
+          {/* Toolbar */}
+          <div className="flex flex-wrap justify-between items-center mb-4 text-gray-300">
+            <div className="flex gap-3">
+              <span className="bg-indigo-500/30 px-3 py-1 rounded-lg font-medium">
+                📄 {code.split("\n").length} lines
+              </span>
+              <span className="bg-green-500/30 px-3 py-1 rounded-lg font-medium">
+                ✍️ {code.length} chars
+              </span>
+            </div>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="px-3 py-1 rounded-lg bg-white/20 text-white font-semibold backdrop-blur-md"
+            >
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+              <option value="cpp">C++</option>
+              <option value="java">Java</option>
+            </select>
           </div>
 
-          {/* Code editor component */}
-          <div className="code">
+          {/* Code Editor */}
+          <div className="flex-1 overflow-auto rounded-xl shadow-inner bg-gray-800/70 dark:bg-gray-800/70 p-4 mb-4 backdrop-blur-sm border border-white/10">
             <Editor
               value={code}
-              onValueChange={(code) => setCode(code)}
+              onValueChange={setCode}
               highlight={(code) =>
-                prism.highlight(code, prism.languages.javascript, "javascript")
+                prism.highlight(code, prism.languages[language] || prism.languages.javascript, language)
               }
               padding={10}
-              style={{
-                fontFamily: '"Fira Code", monospace',
-                fontSize: 16,
-                height: "100%",
-                width: "100%",
-              }}
+              style={{ fontFamily: '"Fira Code", monospace', fontSize: 16 }}
             />
           </div>
 
-          {/* Button to trigger AI code review */}
-          <div onClick={reviewCode} className="review">
-            {loading ? "⏳ Reviewing..." : "🚀 Review Code"}
+          {/* Buttons */}
+          <div className="flex justify-between">
+            <button
+              onClick={() => setCode("")}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-all shadow-md"
+            >
+              🗑️ Clear
+            </button>
+            <button
+              onClick={reviewCode}
+              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-green-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition-all hover:shadow-2xl"
+            >
+              {loading ? "⏳ Reviewing..." : "🚀 Review Code"}
+            </button>
           </div>
         </div>
 
-        {/* RIGHT PANEL - Review Output */}
-        <div className="right">
-          <div className="review-header">
-            <h2>Review</h2>
-            {/* Clear review button */}
-            <button className="clear-btn" onClick={() => setReview("")}>
-              🗑️ Clear Review
-            </button>
+        {/* RIGHT PANEL */}
+        <div className="flex-1 flex flex-col bg-gray-800/70 dark:bg-gray-800/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-purple-500/40 transition-all hover:scale-[1.01]">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold tracking-wide">Review</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => copyToClipboard(review)}
+                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all"
+              >
+                📋 Copy
+              </button>
+              <button
+                onClick={downloadReview}
+                className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all"
+              >
+                ⬇️ Save
+              </button>
+              <button
+                onClick={() => setReview("")}
+                className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+              >
+                🗑️ Clear
+              </button>
+            </div>
           </div>
-          <div className="review-box">
-            {/* Display AI review or placeholder */}
-            {review ? (
-              <pre>{review}</pre>
+          <div className="flex-1 overflow-auto">
+            {loading ? (
+              <div className="animate-pulse space-y-2">
+                <div className="h-4 bg-gray-600 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-600 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-600 rounded w-full"></div>
+              </div>
+            ) : review ? (
+              <pre className="whitespace-pre-wrap break-words font-mono">
+                {review}
+              </pre>
             ) : (
-              "⚡ No review yet, try submitting code!"
+              <p className="text-gray-400">
+                ⚡ No review yet, try submitting code!
+              </p>
             )}
           </div>
         </div>
       </main>
+
+      {/* FOOTER */}
+      <footer className="p-4 text-center text-sm text-gray-400 bg-transparent">
+        Made with ❤️ by Shashi | Powered by AI ⚡
+      </footer>
     </div>
   );
 }
