@@ -6,13 +6,28 @@ import axios from "axios";
 import "./index.css";
 
 function App() {
-  const [code, setCode] = useState(`function sum(a, b) {
-  return a + b;
-}`);
+  // Default wrong C++ code
+  const [code, setCode] = useState(`#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter number: ";
+    cin >> n;
+    
+    if(n % 2 = 0) {   // ❌ गलत operator, '==' होना चाहिए
+        cout << "Even number" << endl   // ❌ semicolon missing
+    } else {
+        cout << "Odd number" << endl;
+    }
+    
+    return 0          // ❌ semicolon missing
+}   // ❌ extra bracket
+`);
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] = useState("cpp");
 
   useEffect(() => {
     prism.highlightAll();
@@ -66,7 +81,7 @@ function App() {
     <div
       className={
         darkMode
-          ? "dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-gray-100 min-h-screen flex flex-col"
+          ? "dark bg-gradient-to-br from-gray-950 via-gray-900 to-black text-gray-100 min-h-screen flex flex-col"
           : "bg-gradient-to-br from-gray-100 to-white text-gray-900 min-h-screen flex flex-col"
       }
     >
@@ -81,7 +96,7 @@ function App() {
         <div className="flex gap-2">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md font-semibold hover:bg-white/40 transition-all shadow-md hover:shadow-xl"
+            className="px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md font-semibold hover:bg-white/40 transition-all shadow-md hover:shadow-xl active:scale-90"
           >
             {darkMode ? "🌞 Light" : "🌙 Dark"}
           </button>
@@ -92,7 +107,7 @@ function App() {
         {/* LEFT PANEL */}
         <div className="flex-1 flex flex-col bg-gray-900/70 dark:bg-gray-900/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:scale-[1.01]">
           {/* Toolbar */}
-          <div className="flex flex-wrap justify-between items-center mb-4 text-gray-300">
+          <div className="flex flex-wrap justify-between items-center mb-4 text-gray-300 gap-2">
             <div className="flex gap-3">
               <span className="bg-indigo-500/30 px-3 py-1 rounded-lg font-medium">
                 📄 {code.split("\n").length} lines
@@ -101,16 +116,62 @@ function App() {
                 ✍️ {code.length} chars
               </span>
             </div>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="px-3 py-1 rounded-lg bg-white/20 text-white font-semibold backdrop-blur-md"
-            >
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="cpp">C++</option>
-              <option value="java">Java</option>
-            </select>
+
+            {/* 🔥 Stylish Language Dropdown */}
+            <div className="relative">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="appearance-none px-4 py-3 rounded-xl bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white font-semibold backdrop-blur-md border border-gray-700 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 hover:border-purple-400 transition-all cursor-pointer"
+              >
+                <option disabled className="text-gray-400">
+                  🔽 Select Language
+                </option>
+                <option value="javascript" className="text-black">
+                  🟨 JavaScript
+                </option>
+                <option value="typescript" className="text-black">
+                  🔵 TypeScript
+                </option>
+                <option value="python" className="text-black">
+                  🐍 Python
+                </option>
+                <option value="cpp" className="text-black">
+                  💠 C++
+                </option>
+                <option value="c" className="text-black">
+                  ⚙️ C
+                </option>
+                <option value="java" className="text-black">
+                  ☕ Java
+                </option>
+                <option value="csharp" className="text-black">
+                  #️⃣ C#
+                </option>
+                <option value="go" className="text-black">
+                  🌀 Go
+                </option>
+                <option value="ruby" className="text-black">
+                  💎 Ruby
+                </option>
+                <option value="php" className="text-black">
+                  🌐 PHP
+                </option>
+                <option value="swift" className="text-black">
+                  🦅 Swift
+                </option>
+                <option value="kotlin" className="text-black">
+                  🟣 Kotlin
+                </option>
+                <option value="rust" className="text-black">
+                  🦀 Rust
+                </option>
+              </select>
+              {/* Dropdown Arrow */}
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                ▼
+              </span>
+            </div>
           </div>
 
           {/* Code Editor */}
@@ -119,7 +180,11 @@ function App() {
               value={code}
               onValueChange={setCode}
               highlight={(code) =>
-                prism.highlight(code, prism.languages[language] || prism.languages.javascript, language)
+                prism.highlight(
+                  code,
+                  prism.languages[language] || prism.languages.javascript,
+                  language
+                )
               }
               padding={10}
               style={{ fontFamily: '"Fira Code", monospace', fontSize: 16 }}
@@ -127,16 +192,16 @@ function App() {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-between">
+          <div className="flex justify-between flex-wrap gap-2">
             <button
               onClick={() => setCode("")}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-all shadow-md"
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-all shadow-md transform hover:scale-105 active:scale-90"
             >
               🗑️ Clear
             </button>
             <button
               onClick={reviewCode}
-              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-green-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition-all hover:shadow-2xl"
+              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-green-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 active:scale-90 transition-all hover:shadow-2xl"
             >
               {loading ? "⏳ Reviewing..." : "🚀 Review Code"}
             </button>
@@ -145,30 +210,39 @@ function App() {
 
         {/* RIGHT PANEL */}
         <div className="flex-1 flex flex-col bg-gray-800/70 dark:bg-gray-800/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-purple-500/40 transition-all hover:scale-[1.01]">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
             <h2 className="text-xl font-semibold tracking-wide">Review</h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => copyToClipboard(review)}
-                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all"
+                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-90"
               >
                 📋 Copy
               </button>
               <button
                 onClick={downloadReview}
-                className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all"
+                className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-90"
               >
                 ⬇️ Save
               </button>
               <button
-                onClick={() => setReview("")}
-                className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                onClick={() => {
+                  setLoading(false);
+                  setReview("");
+                }}
+                className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-90"
               >
                 🗑️ Clear
               </button>
             </div>
           </div>
-          <div className="flex-1 overflow-auto">
+
+          {/* Review Output */}
+          <div
+            className={`flex-1 overflow-auto transition-opacity duration-300 ${
+              review === "" ? "opacity-0" : "opacity-100"
+            }`}
+          >
             {loading ? (
               <div className="animate-pulse space-y-2">
                 <div className="h-4 bg-gray-600 rounded w-3/4"></div>
