@@ -6,7 +6,6 @@ import axios from "axios";
 import "./index.css";
 
 function App() {
-  // Default wrong C++ code
   const [code, setCode] = useState(`#include <iostream>
 using namespace std;
 
@@ -81,8 +80,8 @@ int main() {
     <div
       className={
         darkMode
-          ? "dark bg-gradient-to-br from-gray-950 via-gray-900 to-black text-gray-100 min-h-screen flex flex-col"
-          : "bg-gradient-to-br from-gray-100 to-white text-gray-900 min-h-screen flex flex-col"
+          ? "bg-gradient-to-br from-gray-950 via-gray-900 to-black text-gray-100 min-h-screen flex flex-col"
+          : "bg-gradient-to-br from-gray-100 via-gray-50 to-white text-gray-900 min-h-screen flex flex-col"
       }
     >
       {/* HEADER */}
@@ -105,77 +104,73 @@ int main() {
 
       <main className="flex flex-col md:flex-row gap-6 p-4 md:p-6 flex-1">
         {/* LEFT PANEL */}
-        <div className="flex-1 flex flex-col bg-gray-900/70 dark:bg-gray-900/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:scale-[1.01]">
+        <div
+          className={
+            darkMode
+              ? "flex-1 flex flex-col bg-gray-900/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:scale-[1.01]"
+              : "flex-1 flex flex-col bg-white/70 p-6 rounded-2xl shadow-xl border border-gray-200 hover:border-indigo-300 transition-all duration-300 hover:scale-[1.01]"
+          }
+        >
           {/* Toolbar */}
-          <div className="flex flex-wrap justify-between items-center mb-4 text-gray-300 gap-2">
+          <div className="flex flex-wrap justify-between items-center mb-4 text-gray-500 dark:text-gray-300 gap-2">
             <div className="flex gap-3">
-              <span className="bg-indigo-500/30 px-3 py-1 rounded-lg font-medium">
+              <span className="bg-indigo-500/30 px-3 py-1 rounded-lg font-medium text-indigo-700 dark:text-white">
                 📄 {code.split("\n").length} lines
               </span>
-              <span className="bg-green-500/30 px-3 py-1 rounded-lg font-medium">
+              <span className="bg-green-500/30 px-3 py-1 rounded-lg font-medium text-green-700 dark:text-white">
                 ✍️ {code.length} chars
               </span>
             </div>
 
-            {/* 🔥 Stylish Language Dropdown */}
+            {/* Stylish Language Dropdown */}
             <div className="relative">
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="appearance-none px-4 py-3 rounded-xl bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white font-semibold backdrop-blur-md border border-gray-700 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 hover:border-purple-400 transition-all cursor-pointer"
+                className={
+                  darkMode
+                    ? "appearance-none px-4 py-3 rounded-xl bg-gray-800 text-white font-semibold border border-gray-700 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 hover:border-purple-400 transition-all cursor-pointer"
+                    : "appearance-none px-4 py-3 rounded-xl bg-white text-black font-semibold border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 hover:border-purple-400 transition-all cursor-pointer"
+                }
               >
-                <option disabled className="text-gray-400">
+                <option disabled className={darkMode ? "text-gray-400" : "text-gray-400"}>
                   🔽 Select Language
                 </option>
-                <option value="javascript" className="text-black">
-                  🟨 JavaScript
-                </option>
-                <option value="typescript" className="text-black">
-                  🔵 TypeScript
-                </option>
-                <option value="python" className="text-black">
-                  🐍 Python
-                </option>
-                <option value="cpp" className="text-black">
-                  💠 C++
-                </option>
-                <option value="c" className="text-black">
-                  ⚙️ C
-                </option>
-                <option value="java" className="text-black">
-                  ☕ Java
-                </option>
-                <option value="csharp" className="text-black">
-                  #️⃣ C#
-                </option>
-                <option value="go" className="text-black">
-                  🌀 Go
-                </option>
-                <option value="ruby" className="text-black">
-                  💎 Ruby
-                </option>
-                <option value="php" className="text-black">
-                  🌐 PHP
-                </option>
-                <option value="swift" className="text-black">
-                  🦅 Swift
-                </option>
-                <option value="kotlin" className="text-black">
-                  🟣 Kotlin
-                </option>
-                <option value="rust" className="text-black">
-                  🦀 Rust
-                </option>
+                <option value="javascript">🟨 JavaScript</option>
+                <option value="typescript">🔵 TypeScript</option>
+                <option value="python">🐍 Python</option>
+                <option value="cpp">💠 C++</option>
+                <option value="c">⚙️ C</option>
+                <option value="java">☕ Java</option>
+                <option value="csharp">#️⃣ C#</option>
+                <option value="go">🌀 Go</option>
+                <option value="ruby">💎 Ruby</option>
+                <option value="php">🌐 PHP</option>
+                <option value="swift">🦅 Swift</option>
+                <option value="kotlin">🟣 Kotlin</option>
+                <option value="rust">🦀 Rust</option>
               </select>
               {/* Dropdown Arrow */}
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span
+                className={
+                  darkMode
+                    ? "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    : "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                }
+              >
                 ▼
               </span>
             </div>
           </div>
 
           {/* Code Editor */}
-          <div className="flex-1 overflow-auto rounded-xl shadow-inner bg-gray-800/70 dark:bg-gray-800/70 p-4 mb-4 backdrop-blur-sm border border-white/10">
+          <div
+            className={
+              darkMode
+                ? "flex-1 overflow-auto rounded-xl shadow-inner bg-gray-800/70 p-4 mb-4 backdrop-blur-sm border border-white/10"
+                : "flex-1 overflow-auto rounded-xl shadow-inner bg-white/70 p-4 mb-4 backdrop-blur-sm border border-gray-300"
+            }
+          >
             <Editor
               value={code}
               onValueChange={setCode}
@@ -209,7 +204,13 @@ int main() {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="flex-1 flex flex-col bg-gray-800/70 dark:bg-gray-800/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-purple-500/40 transition-all hover:scale-[1.01]">
+        <div
+          className={
+            darkMode
+              ? "flex-1 flex flex-col bg-gray-800/70 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-white/10 hover:border-purple-500/40 transition-all hover:scale-[1.01]"
+              : "flex-1 flex flex-col bg-white/70 p-6 rounded-2xl shadow-xl border border-gray-200 hover:border-purple-300 transition-all hover:scale-[1.01]"
+          }
+        >
           <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
             <h2 className="text-xl font-semibold tracking-wide">Review</h2>
             <div className="flex gap-2 flex-wrap">
@@ -245,16 +246,16 @@ int main() {
           >
             {loading ? (
               <div className="animate-pulse space-y-2">
-                <div className="h-4 bg-gray-600 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-600 rounded w-1/2"></div>
-                <div className="h-4 bg-gray-600 rounded w-full"></div>
+                <div className="h-4 bg-gray-400 dark:bg-gray-600 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-400 dark:bg-gray-600 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-400 dark:bg-gray-600 rounded w-full"></div>
               </div>
             ) : review ? (
               <pre className="whitespace-pre-wrap break-words font-mono">
                 {review}
               </pre>
             ) : (
-              <p className="text-gray-400">
+              <p className="text-gray-500 dark:text-gray-400">
                 ⚡ No review yet, try submitting code!
               </p>
             )}
@@ -263,7 +264,7 @@ int main() {
       </main>
 
       {/* FOOTER */}
-      <footer className="p-4 text-center text-sm text-gray-400 bg-transparent">
+      <footer className="p-4 text-center text-sm text-gray-500 dark:text-gray-400 bg-transparent">
         Made with ❤️ by Shashi | Powered by AI ⚡
       </footer>
     </div>
