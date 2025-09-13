@@ -6,22 +6,14 @@ import axios from "axios";
 import "./index.css";
 
 function App() {
-  const [code, setCode] = useState(`#include <iostream>
-using namespace std;
-
-int main() {
-    int n;
-    cout << "Enter number: ";
-    cin >> n;
-    
-    if(n % 2 = 0) {   // ❌ गलत operator, '==' होना चाहिए
-        cout << "Even number" << endl   // ❌ semicolon missing
-    } else {
-        cout << "Odd number" << endl;
-    }
-    
-    return 0          // ❌ semicolon missing
-}   // ❌ extra bracket
+  const [code, setCode] = useState(`function sumArray(arr) {
+  let sum  0;
+  for (let num of arr) {
+    sum += num;
+  }
+  return sum;
+}
+console.log("Sum of numbers:", sumArray(numbers))   // ❌ extra bracket
 `);
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
