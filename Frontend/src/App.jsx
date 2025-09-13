@@ -10,10 +10,7 @@ function App() {
   let sum  0;
   for (let num of arr) {
     sum += num;
-  }
-  return sum;
-}
-console.log("Sum of numbers:", sumArray(numbers))   // ❌ extra bracket
+
 `);
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
