@@ -114,10 +114,22 @@ int main() {
           {/* Toolbar */}
           <div className="flex flex-wrap justify-between items-center mb-4 text-gray-500 dark:text-gray-300 gap-2">
             <div className="flex gap-3">
-              <span className="bg-indigo-500/30 px-3 py-1 rounded-lg font-medium text-indigo-700 dark:text-white">
+              <span
+                className={
+                  darkMode
+                    ? "bg-indigo-500/30 px-3 py-1 rounded-lg font-medium text-indigo-700 dark:text-white"
+                    : "bg-gray-800 px-3 py-1 rounded-lg font-medium text-white"
+                }
+              >
                 📄 {code.split("\n").length} lines
               </span>
-              <span className="bg-green-500/30 px-3 py-1 rounded-lg font-medium text-green-700 dark:text-white">
+              <span
+                className={
+                  darkMode
+                    ? "bg-green-500/30 px-3 py-1 rounded-lg font-medium text-green-700 dark:text-white"
+                    : "bg-gray-800 px-3 py-1 rounded-lg font-medium text-white"
+                }
+              >
                 ✍️ {code.length} chars
               </span>
             </div>
@@ -193,13 +205,21 @@ int main() {
           <div className="flex justify-between flex-wrap gap-2">
             <button
               onClick={() => setCode("")}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-all shadow-md transform hover:scale-105 active:scale-90"
+              className={
+                darkMode
+                  ? "px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-all shadow-md transform hover:scale-105 active:scale-90"
+                  : "px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-xl font-semibold transition-all shadow-md transform hover:scale-105 active:scale-90"
+              }
             >
               🗑️ Clear
             </button>
             <button
               onClick={reviewCode}
-              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-green-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 active:scale-90 transition-all hover:shadow-2xl"
+              className={
+                darkMode
+                  ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-green-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 active:scale-90 transition-all hover:shadow-2xl"
+                  : "bg-gray-800 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 active:scale-90 transition-all hover:shadow-2xl"
+              }
             >
               {loading ? "⏳ Reviewing..." : "🚀 Review Code"}
             </button>
